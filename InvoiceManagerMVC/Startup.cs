@@ -1,4 +1,5 @@
 using System;
+using InvoiceManagerMVC.Controllers;
 using InvoiceManagerMVC.EFModels;
 using InvoiceManagerMVC.Models.Managers;
 using Microsoft.AspNetCore.Builder;
@@ -56,7 +57,7 @@ namespace InvoiceManagerMVC
             app.UseSpaStaticFiles();
 
             app.UseRouting();
-
+            //app.UseMiddleware<ApiKeyMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

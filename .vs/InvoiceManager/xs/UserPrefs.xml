@@ -1,0 +1,43 @@
+﻿<Properties StartupConfiguration="{F4DCFE58-73EC-4AC7-A041-66BBBAACD306}|Default">
+  <MonoDevelop.Ide.Workbench>
+    <Files>
+      <File FileName="InvoiceManagerMVC/Controllers/AuthorizeAttribute.cs" Line="36" Column="18" />
+      <File FileName="InvoiceManagerMVC/appsettings.json" Line="13" Column="46" />
+      <File FileName="InvoiceManagerMVC/Controllers/InvoiceController.cs" Line="13" Column="1" />
+      <File FileName="InvoiceManagerMVC/Startup.cs" Line="59" Column="30" />
+      <File FileName="InvoiceManagerMVC/Program.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="InvoiceManager" expanded="True">
+            <Node name="InvoiceManagerMVC" expanded="True">
+              <Node name="ClientApp" expanded="True">
+                <Node name=".idea" expanded="True">
+                  <Node name="inspectionProfiles" expanded="True" />
+                </Node>
+                <Node name="public" expanded="True" />
+                <Node name="src" expanded="True">
+                  <Node name="components" expanded="True" />
+                </Node>
+              </Node>
+              <Node name="Controllers" expanded="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="Startup.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.InvoiceManagerMVC PreferredExecutionTarget="/Applications/Brave Browser.app" />
+</Properties>

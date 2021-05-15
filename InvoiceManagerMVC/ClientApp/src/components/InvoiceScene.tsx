@@ -23,6 +23,9 @@ export enum InvoiceState {
     nezaplaceno, zaplaceno
 }
 
+const headers = {'Content-Type': 'application/json', "ApiKey" : "NYyzcdQgvhLtEwz58XXAz4HTJuxXJXlX"};
+// const headers = {'Content-Type': 'application/json'};
+
 export const InvoiceScene = () => {
 
     const [invoices, setInvoices] = useState<IInvoice[]>([]);
@@ -57,14 +60,14 @@ export const InvoiceScene = () => {
     const post = async (route: string, body: string) => {
         return await fetch('api/Invoice' + route, {
             method: 'post',
-            headers: {'Content-Type': 'application/json'},
+            headers: headers,
             body: body
         });
     }
     const patch = async (invoiceId: number, body: string) => {
         return await fetch('api/Invoice/' + invoiceId, {
             method: 'patch',
-            headers: {'Content-Type': 'application/json'},
+            headers: headers,
             body: body
         });
     }
@@ -72,14 +75,14 @@ export const InvoiceScene = () => {
     const get = async () => {
         return await fetch('api/Invoice', {
             method: 'get',
-            headers: {'Content-Type': 'application/json'}
+            headers: headers
         })
     }
 
     const deleteInvoiceItem = async (itemId: number) => {
         return await fetch('api/Invoice/delete/item/' + itemId, {
             method: 'delete',
-            headers: {'Content-Type': 'application/json'}
+            headers: headers
         })
     }
 
