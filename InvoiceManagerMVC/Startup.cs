@@ -57,7 +57,6 @@ namespace InvoiceManagerMVC
             app.UseSpaStaticFiles();
 
             app.UseRouting();
-            //app.UseMiddleware<ApiKeyMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

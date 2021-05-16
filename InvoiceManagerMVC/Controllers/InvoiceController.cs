@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceManagerMVC.Controllers
 {
+    [ApiKey]
     [Route("api/[controller]")]
     [ApiController]
     public class InvoiceController : ControllerBase
