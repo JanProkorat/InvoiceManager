@@ -1,70 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using InvoiceManagerMVC.Models.Managers;
-using InvoiceManagerMVC.Models.Profiles;
-using Microsoft.AspNetCore.Authorization;
+using InvoiceManagerMVC.Dtos;
+using InvoiceManagerMVC.Handlers.Commands;
+using InvoiceManagerMVC.Handlers.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace InvoiceManagerMVC.Controllers
 {
-    [ApiKey]
+    // [ApiKey]
     [Route("api/[controller]")]
     [ApiController]
     public class InvoiceController : ControllerBase
     {
-        public readonly IInvoiceManager _invoiceManager;
+        private readonly IMediator _mediator;
 
-        public InvoiceController(IInvoiceManager invoiceManager)
+        public InvoiceController(IMediator mediator)
         {
-            _invoiceManager = invoiceManager;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [Route("")]
-        public ActionResult<List<InvoiceDTO>> GetInvoiceList()
+        public async Task<ActionResult<List<InvoiceDto>>> GetInvoiceList()
         {
-            return _invoiceManager.GetUnpaidInvoices();
+            return Ok(await _mediator.Send(new GetInvoiceListQuery()));
         }
 
         [HttpPost]
-        [Route("add")]
-        public ActionResult<InvoiceDTO> CreateInvoice([FromBody] InvoiceDTO invoice)
+        [Route("")]
+        public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] CreateInvoiceCommand command)
         {
-            return _invoiceManager.CreateInvoice(invoice);
+            return Ok(await _mediator.Send(command));
         }
 
-        [HttpPatch]
-        [Route("{invoiceId}")]
-        public ActionResult<InvoiceDTO> UpdateInvoice([FromRoute] int invoiceId, [FromBody] UpdateInvoiceRequest request)
+        [HttpPut]
+        [Route("{invoiceId:int}")]
+        public async Task<ActionResult<InvoiceDto>> UpdateInvoice([FromRoute] int invoiceId, [FromBody] UpdateInvoiceCommand command)
         {
-            var result = _invoiceManager.UpdateInvoice(invoiceId, request.InvoiceName);
-            return result == null ? NotFound() : result;
-        }
-
-        [HttpPost]
-        [Route("add/item")]
-        public ActionResult<InvoiceItemDTO> CreateInvoiceItem([FromBody] InvoiceItemDTO invoiceItem)
-        {
-            return _invoiceManager.CreateInvoiceItem(invoiceItem);
-        }
-
-        [HttpDelete]
-        [Route("delete/item/{itemId}")]
-        public ActionResult DeleteInvoiceItem([FromRoute] int itemId)
-        {
-            var result = _invoiceManager.DeleteInvoiceItem(itemId);
-            return result ? Ok() : NotFound();
-        }
-
-        [HttpPost]
-        [Route("{invoiceId}")]
-        public ActionResult PayInvoice([FromRoute] int invoiceId)
-        {
-            var result = _invoiceManager.PayInvoice(invoiceId);
-            return result ? Ok() : NotFound();
+            command.SetId(invoiceId);
+            return Ok(await _mediator.Send(command));
         }
     }
 }

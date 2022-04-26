@@ -1,21 +1,27 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿
 
 #nullable disable
 
+using System;
+using System.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace InvoiceManagerMVC.EFModels
 {
-    public partial class DB_DevelopContext : DbContext
+    public partial class InvoiceDbContext : DbContext
     {
-        public DB_DevelopContext()
+        public InvoiceDbContext()
         {
         }
 
-        public DB_DevelopContext(DbContextOptions<DB_DevelopContext> options)
+        public InvoiceDbContext(DbContextOptions<InvoiceDbContext> options)
             : base(options)
         {
         }
+        
+        public bool HasActiveTransaction => Database.CurrentTransaction != null;
 
         public virtual DbSet<Invoice> Invoices { get; set; }
         public virtual DbSet<InvoiceItem> InvoiceItems { get; set; }
@@ -24,7 +30,7 @@ namespace InvoiceManagerMVC.EFModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Name=Data");
+                optionsBuilder.UseNpgsql("Name=Data");
             }
         }
 
@@ -82,5 +88,52 @@ namespace InvoiceManagerMVC.EFModels
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+        
+        // public Task<IDbContextTransaction> BeginTransactionAsync()
+        // {
+        //     return HasActiveTransaction ? Task.FromResult<IDbContextTransaction>(null) : Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+        // }
+        //
+        // public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+        // {
+        //     if (transaction == null) throw new ArgumentNullException(nameof(transaction));
+        //     if (transaction != Database.CurrentTransaction) throw new InvalidOperationException($"Transaction {transaction.TransactionId} is not current");
+        //
+        //     try
+        //     {
+        //         await SaveChangesAsync();
+        //         await transaction.CommitAsync();
+        //     }
+        //     catch
+        //     {
+        //         await RollbackTransactionAsync();
+        //         throw;
+        //     }
+        //     finally
+        //     {
+        //         if (Database.CurrentTransaction != null)
+        //         {
+        //             await Database.CurrentTransaction.DisposeAsync();
+        //         }
+        //     }
+        // }
+        //
+        // public async Task RollbackTransactionAsync()
+        // {
+        //     try
+        //     {
+        //         if (Database.CurrentTransaction != null)
+        //         {
+        //             await Database.CurrentTransaction.RollbackAsync();
+        //         }
+        //     }
+        //     finally
+        //     {
+        //         if (Database.CurrentTransaction != null)
+        //         {
+        //             await Database.CurrentTransaction.DisposeAsync();
+        //         }
+        //     }
+        // }
     }
 }

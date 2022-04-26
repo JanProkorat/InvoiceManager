@@ -1,15 +1,16 @@
 using System;
-using InvoiceManagerMVC.Controllers;
+using System.Reflection;
 using InvoiceManagerMVC.EFModels;
-using InvoiceManagerMVC.Models.Managers;
+using InvoiceManagerMVC.Infrastructure.Migrations;
+using InvoiceManagerMVC.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MediatR;
 
 namespace InvoiceManagerMVC
 {
@@ -20,35 +21,44 @@ namespace InvoiceManagerMVC
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
 
             services.AddControllersWithViews();
 
-            // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
-            services.AddDbContext<DB_DevelopContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Data")));
+            services.AddDbContext<InvoiceDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("Data")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddTransient<IInvoiceManager, InvoiceManager>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddHostedService<MigrationService>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddMediatR(typeof(Startup).GetTypeInfo().Assembly);
+            services.AddAutoMapper(typeof(Startup));
+            services.AddSwaggerGen();
+
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = "swagger";
+                });
             }
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -64,15 +74,15 @@ namespace InvoiceManagerMVC
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            // app.UseSpa(spa =>
+            // {
+            //     spa.Options.SourcePath = "ClientApp";
+            //
+            //     if (env.IsDevelopment())
+            //     {
+            //         spa.UseReactDevelopmentServer(npmScript: "start");
+            //     }
+            // });
         }
     }
 }
